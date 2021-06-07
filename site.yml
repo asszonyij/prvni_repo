@@ -51,6 +51,17 @@
       group: root
       mode: 0644
 
+  - name: start service http
+    tags: apachestart
+    service: 
+      name: apache2
+      state: started
+
+  - name: stop service http
+    tags: apachestop
+    service:
+      name: apache2
+      state: stopped	
 
 - hosts: db_servers
   become: yes
