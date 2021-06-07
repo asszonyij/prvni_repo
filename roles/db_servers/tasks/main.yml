@@ -1,0 +1,5 @@
+- name: install mariadb
+  tags: ubuntu,mariadb
+  package:
+    name: mariadb-server
+    state: latest

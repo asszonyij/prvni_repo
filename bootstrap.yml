@@ -1,0 +1,36 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+- hosts: all
+  become: true
+  tasks:
+  
+  - name: create user named honza
+    tags: always
+    user:
+      name: honza
+      groups: root
+
+  - name: add ssh key for simon
+    tags: always
+    authorized_key:
+      user: honza
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOZU38X9xTyZwxMxbUGGpzn+XAgV5HcpajSMA0ph2MYi asszonyij@MyPC"
+   
+  - name: add sudoers file for honza
+    tags: always
+    copy:
+      src: sudoer_honza
+      dest: /etc/sudoers.d/honza
+      owner: root
+      group: root
+      mode: 0440

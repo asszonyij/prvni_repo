@@ -1,0 +1,97 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates
+    tags: always
+    apt:
+      update_cache: yes
+
+- hosts: all
+  become: true
+  tasks:
+  
+#  - name: add sudoers file for honza
+#    tags: always
+#    copy:
+#      src: sudoer_honza
+#      dest: /etc/sudoers.d/honza
+#     owner: root
+#      group: root
+#      mode: 0440
+
+- hosts: workstations
+  become: true
+  tasks: 
+
+  - name: install unzip
+    package:
+      name: unzip
+      state: latest
+
+  - name: install terraform
+    unarchive: 
+      src: https://releases.hashicorp.com/terraform/0.15.5/terraform_0.15.5_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache2 package and php
+    tags: apache,apache2,ubuntu
+    package:
+      name: 
+        - apache2
+        - libapache2-mod-php
+      state: latest
+      update_cache: yes
+    when: ansible_distribution in "Ubuntu"
+
+  - name: copy default html file
+    tags: apache,apache2
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
+#  - name: start service http
+#    tags: apachestart
+#    service: 
+#      name: apache2
+#      state: started
+
+#  - name: stop service http
+#    tags: apachestop
+#    service:
+#      name: apache2
+#      state: stopped	
+
+- hosts: db_servers
+  become: yes
+  tasks:
+
+  - name: install mariadb
+    tags: ubuntu,mariadb
+    package:
+      name: mariadb-server
+      state: latest
+
+- hosts: file_servers
+  become: true
+  tasks:
+    
+  - name: install file server
+    tags: samba
+    package:
+      name: samba
+      state: latest
+
