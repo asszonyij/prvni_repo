@@ -1,1 +1,9 @@
+[web_servers]
 jakub@10.0.10.27
+
+[db_servers]
+jakub@10.0.10.27
+
+[file_servers]
+jakub@10.0.10.27
+

@@ -1,0 +1,42 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache2 package and php
+    package:
+      name: 
+        - apache2
+        - libapache2-mod-php
+      state: latest
+      update_cache: yes
+    when: ansible_distribution in "Ubuntu"
+
+- hosts: db_servers
+  become: yes
+  tasks:
+
+  - name: remove mariadb
+    package:
+      name: mariadb-server
+      state: absent
+
+- hosts: file_servers
+  become: true
+  tasks:
+    
+  - name: remove file server
+    package:
+      name: samba
+      state: absent
+
